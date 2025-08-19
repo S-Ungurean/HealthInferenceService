@@ -1,4 +1,4 @@
 models:
-  - type: skin
+  - type: SKIN
     model_name: "skin_classifier.pth"
     model_metadata: "skin_classifier_metadata.json"
