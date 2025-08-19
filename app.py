@@ -11,16 +11,18 @@ from configs import ModelsMap
 from models.PredictInputRequest import PredictInputRequest
 from transformer.InputTransformer import preprocess
 
+from pathlib import Path
+
 app = FastAPI()
 
 # ---- Configuration ----
 S3_BUCKET_NAME = "ai-health-model-storage"
-YAML_RELATIVE_PATH = "configs\ModelTypes.yaml"
+YAML_RELATIVE_PATH = Path("configs") / "ModelTypes.yaml"
 modelName = ""
 modelMetadata = ""
 architecture = ""
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cpu" #### HARDCODED CUDA ISSUES
 
 # ---- API Endpoint ----
 @app.post("/predict")
@@ -30,7 +32,7 @@ async def predict(request: PredictInputRequest):
     content = request.content
 
     # Load YAML Config
-    yamlConfig = loadConfig(YAML_RELATIVE_PATH)
+    yamlConfig = loadConfig(str(YAML_RELATIVE_PATH))
     modelInfo = getModelInfo(yamlConfig, modelType)
 
     modelName = modelInfo['model_name']
