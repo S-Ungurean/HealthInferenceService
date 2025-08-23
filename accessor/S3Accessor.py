@@ -4,11 +4,7 @@ import tempfile
 import boto3
 
 # Create a top-level session using the s3uploader profile
-session = boto3.Session(
-    profile_name="s3uploader",
-    region_name="us-east-1"
-)
-s3 = session.client("s3")
+s3 = boto3.client("s3", region_name="us-east-1")
 
 metadata = {}
 
