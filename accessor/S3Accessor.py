@@ -2,6 +2,9 @@ import json
 import os
 import tempfile
 import boto3
+from logger import get_logger
+
+logger = get_logger(__name__)
 
 # Create a top-level session using the s3uploader profile
 s3 = boto3.client("s3", region_name="us-east-1")
@@ -12,9 +15,15 @@ metadata = {}
 def loadModelFromS3(bucket: str, key: str):
     # Get a proper temp file path
     localPath = os.path.join(tempfile.gettempdir(), os.path.basename(key))
+    logger.info("Downloading model file from S3: bucket=%s, key=%s -> %s", bucket, key, localPath)
 
+    try:
     # Always download and overwrite
-    s3.download_file(bucket, key, localPath)
+        s3.download_file(bucket, key, localPath)
+        logger.debug("Successfully downloaded model to %s", localPath)
+    except Exception as e:
+        logger.exception("Failed to download model from S3: bucket=%s, key=%s", bucket, key)
+        raise
 
     return localPath
 
@@ -23,13 +32,23 @@ def loadModelFromS3(bucket: str, key: str):
 def loadModelMetadatFromS3(bucket: str, key: str):
     # Get a proper temp file path
     localPath = os.path.join(tempfile.gettempdir(), os.path.basename(key))
-
-    # Always download and overwrite
-    s3.download_file(bucket, key, localPath)
+    logger.info("Downloading model metadata from S3: bucket=%s, key=%s -> %s", bucket, key, localPath)
 
 
-    with open(localPath, "r") as f:
-        content = f.read()
-        metadata = json.loads(content)
+    try:
+        # Always download and overwrite
+        s3.download_file(bucket, key, localPath)
+        logger.debug("Successfully downloaded metadata to %s", localPath)
+    except Exception as e:
+        logger.exception("Failed to download model metadata from S3: bucket=%s, key=%s", bucket, key)
+        raise
 
-    return metadata
+    try:
+        with open(localPath, "r") as f:
+            content = f.read()
+            metadata = json.loads(content)
+            logger.debug("Loaded metadata: %s", metadata)
+            return metadata
+    except json.JSONDecodeError as e:
+        logger.exception("Failed to parse model metadata JSON from file %s", localPath)
+        raise
