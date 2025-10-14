@@ -1,7 +1,9 @@
+from http.client import HTTPException
 import json
 import os
 import tempfile
 import boto3
+from exceptions.S3Exceptions import MetadataParseError, S3DownloadError
 from logger import get_logger
 
 logger = get_logger(__name__)
@@ -23,13 +25,13 @@ def loadModelFromS3(bucket: str, key: str):
         logger.debug("Successfully downloaded model to %s", localPath)
     except Exception as e:
         logger.exception("Failed to download model from S3: bucket=%s, key=%s", bucket, key)
-        raise
+        raise S3DownloadError(bucket, key, e)
 
     return localPath
 
 
 # ---- Model Metadata loader from S3 ----
-def loadModelMetadatFromS3(bucket: str, key: str):
+def loadModelMetadataFromS3(bucket: str, key: str):
     # Get a proper temp file path
     localPath = os.path.join(tempfile.gettempdir(), os.path.basename(key))
     logger.info("Downloading model metadata from S3: bucket=%s, key=%s -> %s", bucket, key, localPath)
@@ -41,7 +43,7 @@ def loadModelMetadatFromS3(bucket: str, key: str):
         logger.debug("Successfully downloaded metadata to %s", localPath)
     except Exception as e:
         logger.exception("Failed to download model metadata from S3: bucket=%s, key=%s", bucket, key)
-        raise
+        raise S3DownloadError(bucket, key, e)
 
     try:
         with open(localPath, "r") as f:
@@ -51,4 +53,4 @@ def loadModelMetadatFromS3(bucket: str, key: str):
             return metadata
     except json.JSONDecodeError as e:
         logger.exception("Failed to parse model metadata JSON from file %s", localPath)
-        raise
+        raise MetadataParseError(localPath, e)
