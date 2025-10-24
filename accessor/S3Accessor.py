@@ -22,7 +22,7 @@ def loadModelFromS3(bucket: str, key: str):
     try:
     # Always download and overwrite
         s3.download_file(bucket, key, localPath)
-        logger.debug("Successfully downloaded model to %s", localPath)
+        logger.info("Successfully downloaded model to %s", localPath)
     except Exception as e:
         logger.exception("Failed to download model from S3: bucket=%s, key=%s", bucket, key)
         raise S3DownloadError(bucket, key, e)
@@ -40,7 +40,7 @@ def loadModelMetadataFromS3(bucket: str, key: str):
     try:
         # Always download and overwrite
         s3.download_file(bucket, key, localPath)
-        logger.debug("Successfully downloaded metadata to %s", localPath)
+        logger.info("Successfully downloaded metadata to %s", localPath)
     except Exception as e:
         logger.exception("Failed to download model metadata from S3: bucket=%s, key=%s", bucket, key)
         raise S3DownloadError(bucket, key, e)
@@ -49,7 +49,7 @@ def loadModelMetadataFromS3(bucket: str, key: str):
         with open(localPath, "r") as f:
             content = f.read()
             metadata = json.loads(content)
-            logger.debug("Loaded metadata: %s", metadata)
+            logger.info("Loaded metadata: %s", metadata)
             return metadata
     except json.JSONDecodeError as e:
         logger.exception("Failed to parse model metadata JSON from file %s", localPath)

@@ -3,3 +3,8 @@ models:
     model_name: "skin_classifier.pth"
     model_metadata: "skin_classifier_metadata.json"
     type: "classifier"
+
+  - name: DOG_SKIN
+    model_name: "dog_skin_classifier.pth"
+    model_metadata: "dog_skin_classifier_metadata.json"
+    type: "classifier"

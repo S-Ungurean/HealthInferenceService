@@ -55,7 +55,7 @@ async def predict(request: PredictInputRequest):
 
     modelName = modelInfo['model_name']
     modelMetadataName = modelInfo['model_metadata']
-    logger.debug("Resolved modelName=%s, modelMetadataName=%s", modelName, modelMetadataName)
+    logger.info("Resolved modelName=%s, modelMetadataName=%s", modelName, modelMetadataName)
 
     # Load model and metadata from s3
     try:
@@ -75,7 +75,7 @@ async def predict(request: PredictInputRequest):
         model.eval()
 
         # Preprocess
-        logger.debug("Preprocessing input data")
+        logger.info("Preprocessing input data")
         inputTensor = preprocess(content, modelMetadata)
 
         # Run inference

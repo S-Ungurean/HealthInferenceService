@@ -15,7 +15,7 @@ def preprocess(base64_str, metadata):
     resizeMatrix = tuple(metadata["input_size"])
     normalizeMean = metadata["mean"]
     normalizeStd = metadata["std"]
-    print(resizeMatrix, normalizeMean, normalizeStd)
+
     transform = transforms.Compose([
         transforms.Resize(resizeMatrix[0]),
         transforms.ToTensor(),
