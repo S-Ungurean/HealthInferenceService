@@ -8,3 +8,8 @@ models:
     model_name: "dog_skin_classifier.pth"
     model_metadata: "dog_skin_classifier_metadata.json"
     type: "classifier"
+  
+  - name: CAT_SKIN
+    model_name: "cat_skin_resnet50.pth"
+    model_metadata: "cat_skin_classifier_metadata.json"
+    type: "classifier"
