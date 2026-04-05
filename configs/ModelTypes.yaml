@@ -5,7 +5,7 @@ models:
     type: "classifier"
 
   - name: DOG_SKIN
-    model_name: "dog_skin_classifier.pth"
+    model_name: "dog_skin_resnet50.pth"
     model_metadata: "dog_skin_classifier_metadata.json"
     type: "classifier"
   
